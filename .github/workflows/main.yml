@@ -35,7 +35,7 @@ jobs:
           echo "PR version:   ${{ steps.pr_version.outputs.version }}"
           echo "Main version: ${{ steps.main.outputs.version }}"
 
-          if [[ ${{ steps.pr.outputs.version }} = ${{ steps.main.outputs.version }} ]]
+          if [[ ${{ steps.pr_version.outputs.version }} = ${{ steps.main.outputs.version }} ]]
           then
             echo "Rejected: Version should be incremented"
             exit 1
