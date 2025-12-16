@@ -1,0 +1,45 @@
+name: version check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get PR version
+        id: pr_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      
+      - name: Switch to main branch
+        run: |
+          git checkout origin/main
+      
+      - name: Get main version
+        id: main
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Compare
+        run: |
+          echo "PR version:   ${{ steps.pr_version.outputs.version }}"
+          echo "Main version: ${{ steps.main.outputs.version }}"
+
+          if [[ ${{ steps.pr.outputs.version }} = ${{ steps.main.outputs.version }} ]]
+          then
+            echo "Rejected: Version should be incremented"
+            exit 1
+          fi
+
+          echo "Success: Version incremented"
+
