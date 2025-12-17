@@ -17,6 +17,7 @@ jobs:
             username: ${{ secrets.EC2_USER }}
             key: ${{ secrets.EC2_SSH_KEY }}
             script: |
-                cd /home/ubuntu/app
+                cd /home/ubuntu/aliste-automate
                 git pull origin main
-                pm2 restart all
+                npm install
+                npm run dev
